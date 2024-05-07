@@ -5,6 +5,8 @@ import java.util.concurrent.*;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
+import static java.util.concurrent.CompletableFuture.runAsync;
+
 public interface LogClient {
     /**
      * When a process starts, it calls 'start' with processId.
@@ -143,7 +145,7 @@ class LoggerMain {
      * {1} started at {12} and ended at {15}
      */
     public static void main(String[] args) {
-        final LogClient logger = new LoggerImplementation();
+/*        final LogClient logger = new LoggerImplementation();
         logger.start("1", 1);
         logger.poll();
         logger.start("3", 2);
@@ -157,9 +159,22 @@ class LoggerMain {
         logger.end("3");
         logger.poll();
         logger.poll();
-        logger.poll();
+        logger.poll();*/
         //1
         //3
         //2
+        final LogClient logClient = new LoggerImplementation();
+        logClient.start("1", 1);
+        logClient.start("2", 2);
+        logClient.start("3", 3);
+        logClient.end("3");
+        logClient.end("2");
+
+
+        logClient.end("1");
+        runAsync(logClient::poll);
+        runAsync(logClient::poll);
+        runAsync(logClient::poll);
+
     }
 }
